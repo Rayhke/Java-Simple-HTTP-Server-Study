@@ -58,8 +58,8 @@ class HttpRequestHandlerQueueTest {
     @Test
     void getRequest() {
         // httpRequestHandler.getRequest(); 호출 했을 때 socket0 반환되는지 검증 합니다.
-        Socket client = httpRequestHandler.getRequest();
-        // Assertions.assertEquals("socket0", );
+        TestSocket actual = (TestSocket) httpRequestHandler.getRequest();
+        Assertions.assertEquals("socket0", actual.getName());
     }
 
     @DisplayName("blocking queue test : queue size : 10, 11번째 Socket 를 추가 한다면, consumer 에 의해서 소비될 때 까지 대기 합니다.")
@@ -79,7 +79,7 @@ class HttpRequestHandlerQueueTest {
         });
         producer.start();
 
-        // 2초 대기후 enteringQueue.getCustomer() 호출해서 소비할 수 있도록 consumer Thread를 구현 합니다.
+        // 2초 대기후 enteringQueue.getCustomer() 호출해서 소비할 수 있도록 consumer Thread 를 구현 합니다.
         Thread consumer = new Thread(new Runnable() {
             @Override
             public void run() {
