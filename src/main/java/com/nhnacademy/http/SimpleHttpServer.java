@@ -1,5 +1,8 @@
 package com.nhnacademy.http;
 
+import com.nhnacademy.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -9,7 +12,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Objects;
 
+@Slf4j
 public class SimpleHttpServer {
+
+    private static final String CRLF = "\r\n";
 
     private static final int DEFAULT_PORT = 8080;
 
@@ -39,15 +45,10 @@ public class SimpleHttpServer {
     public void start() throws IOException {
         while (true) {
 
-            try (
-                    //TODO#5 client가 연결될 때 까지 대기 합니다.
-                    Socket client = serverSocket.accept();
-
-                    //TODO#6 입출력을 위해서  Reader, Writer를 선언 합니다.
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-                    BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+            try (Socket client = serverSocket.accept();
+                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
             ) {
-
                 StringBuilder requestBuilder = new StringBuilder();
                 log.debug("------HTTP-REQUEST_start()");
                 while (true) {
@@ -57,7 +58,7 @@ public class SimpleHttpServer {
                     log.debug("{}", line);
 
                     //TODO#8 종료 조건 null or size==0
-                    if (Objects.isNull(line) || line.length() == 0) {
+                    if (StringUtils.isNullOrEmpty(line)) {
                         break;
                     }
                 }
@@ -105,11 +106,11 @@ public class SimpleHttpServer {
                 //TODO#16 buffer에 등록된 Response (header, body) flush 합니다.(socket을 통해서 clent에 응답 합니다.)
                 bufferedWriter.flush();
 
-                log.debug("header:{}", responseHeader);
-                log.debug("body:{}", responseBody);
+                log.debug("header : {}", responseHeader);
+                log.debug("body : {}", responseBody);
 
             } catch (IOException e) {
-                log.error("socket error : {}", e);
+                log.error("socket error : {}", e.getMessage(), e);
             }
         }//end while
     }//end start
