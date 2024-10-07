@@ -1,6 +1,7 @@
 package com.nhnacademy.http;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class HttpRequestHandlerQueueTest {
+
+    private static final int MAX_QUEUE_SIZE = 10;
 
     private HttpRequestHandler httpRequestHandler;
 
@@ -37,31 +40,30 @@ class HttpRequestHandlerQueueTest {
         }
     }
 
-    @Test
     @DisplayName("addRequest, queueSize : 9 -> 10")
+    @Test
     void addRequest() throws Exception {
-        //Socket10 10번째 cleint를 추가 합니다.
+        // Socket10 10번째 client 를 추가 합니다.
         httpRequestHandler.addRequest(new TestSocket("socket10"));
-        //Queue<Socket> requestQueue
+        // Queue<Socket> requestQueue
 
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(HttpRequestHandler.class, "requestQueue", httpRequestHandler);
         Queue<Socket> requestQueue = (Queue<Socket>) readFieldValue.get();
 
-        log.debug("requestQueue-size:{}", requestQueue.size());
-        //TODO#101 - requestQueue.size() 10인지 검증 합니다.
-
-
+        log.debug("requestQueue-size : {}", requestQueue.size());
+        Assertions.assertEquals(MAX_QUEUE_SIZE, requestQueue.size());
     }
 
-    @Test
     @DisplayName("getRequest : socket0")
+    @Test
     void getRequest() {
-        //TODO#102 httpRequestHandler.getRequest(); 호출 했을 때 socket0 반환되는지 검증 합니다.
-
+        // httpRequestHandler.getRequest(); 호출 했을 때 socket0 반환되는지 검증 합니다.
+        Socket client = httpRequestHandler.getRequest();
+        // Assertions.assertEquals("socket0", );
     }
 
+    @DisplayName("blocking queue test : queue size : 10, 11번째 Socket 를 추가 한다면, consumer 에 의해서 소비될 때 까지 대기 합니다.")
     @Test
-    @DisplayName("blocking queue test : queue size : 10, 11번째 Socket를 추가 한다면, consumer에 의해서 소비될 때 까지 대기 합니다.")
     void blockingTest() throws Exception {
 
         Thread producer = new Thread(new Runnable() {
@@ -85,7 +87,7 @@ class HttpRequestHandlerQueueTest {
                     //2초 대기 후 getCustomer()를 호출 합니다.
                     Thread.sleep(2000);
                     TestSocket testSocket = (TestSocket) httpRequestHandler.getRequest();
-                    log.debug("getRequest:{}", testSocket.getName());
+                    log.debug("getRequest : {}", testSocket.getName());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -93,13 +95,15 @@ class HttpRequestHandlerQueueTest {
         });
         consumer.start();
 
-        //TODO#103 producer or consumer thread가 실행 중 이라면 대기 합니다. yield()를 이용해서 구현 하세요.
-
+        do {
+            Thread.yield();
+        } while (producer.isAlive() || consumer.isAlive());
 
         Try<Object> readFieldValue = ReflectionUtils.tryToReadFieldValue(HttpRequestHandler.class, "requestQueue", httpRequestHandler);
         Queue<Socket> requestQueue = (Queue<Socket>) readFieldValue.get();
 
-        //TODO#104 requestQueue.size()가 10인지 검증 합니다.
-
+        // requestQueue.size() 가 10인지 검증 합니다.
+        log.debug("requestQueue-size : {}", requestQueue.size());
+        Assertions.assertEquals(MAX_QUEUE_SIZE, requestQueue.size());
     }
 }
