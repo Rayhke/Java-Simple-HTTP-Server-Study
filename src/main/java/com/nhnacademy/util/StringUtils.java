@@ -4,6 +4,9 @@ import java.util.Objects;
 
 public final class StringUtils {
 
+    // 운영체제에 따라 줄바꿈을 맞춰서 해줌
+    public static final String CRLF = System.lineSeparator();
+
     private StringUtils() {}
 
     // StringUtils.isEmpty() 과 비슷하다.
