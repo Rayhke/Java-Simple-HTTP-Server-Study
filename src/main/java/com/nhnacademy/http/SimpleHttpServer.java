@@ -1,11 +1,12 @@
 package com.nhnacademy.http;
 
+import com.nhnacademy.http.channel.HttpJob;
+import com.nhnacademy.http.channel.RequestChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j
 public class SimpleHttpServer {
@@ -14,7 +15,9 @@ public class SimpleHttpServer {
 
     private final int port;
 
-    private final AtomicLong atomicCounter;
+    private final RequestChannel requestChannel;
+
+    private WorkerThreadPool workerThreadPool;
 
     public SimpleHttpServer() {
         this(DEFAULT_PORT);
@@ -24,42 +27,25 @@ public class SimpleHttpServer {
         if (port < 0 || 65535 < port) {
             throw new IllegalArgumentException(String.format("port is range Out! : %d", port));
         }
-
         this.port = port;
-        this.atomicCounter = new AtomicLong();
-        /*try {
-            serverSocket = new ServerSocket(this.port);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
+        this.requestChannel = new RequestChannel();
+        this.workerThreadPool = new WorkerThreadPool(requestChannel);
     }
 
     // =================================================================================================================
+    // method
 
     public synchronized void start() throws IOException {
+        workerThreadPool.start();
+
         try (ServerSocket serverSocket = new ServerSocket(port)
         ) {
-            HttpRequestHandler httpRequestHandlerA = new HttpRequestHandler();
-            HttpRequestHandler httpRequestHandlerB = new HttpRequestHandler();
-
-            Thread threadA = new Thread(httpRequestHandlerA);
-            threadA.setName("threadA");
-            threadA.start();
-
-            Thread threadB = new Thread(httpRequestHandlerB);
-            threadB.setName("threadB");
-            threadB.start();
-
-            while (true) {
+            while (!serverSocket.isClosed()) {
                 Socket client = serverSocket.accept();
-                if ((atomicCounter.getAndDecrement() & 1) == 0) {
-                    httpRequestHandlerA.addRequest(client);
-                } else {
-                    httpRequestHandlerB.addRequest(client);
-                }
+                requestChannel.addHttpJob(new HttpJob(client));
             }
         } catch (Exception e) {
-            log.debug("{}", e.getMessage(), e);
+            log.debug("server error : {}", e.getMessage(), e);
         }
     }
 }
