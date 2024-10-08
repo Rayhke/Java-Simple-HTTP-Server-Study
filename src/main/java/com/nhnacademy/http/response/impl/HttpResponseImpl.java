@@ -20,12 +20,12 @@ public class HttpResponseImpl implements HttpResponse {
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        return null;
+        return new PrintWriter(client.getOutputStream());
     }
 
     @Override
     public void setCharacterEncoding(String charset) {
-        int Null;
+
     }
 
     @Override

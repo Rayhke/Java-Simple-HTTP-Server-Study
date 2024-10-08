@@ -49,7 +49,11 @@ public class HttpJob implements Executable {
         // <html><body><h1>thread-2:hello java</h1></body>
         // ...
 
-        StringBuilder requestBuilder = new StringBuilder();
+        log.debug("method : {}", httpRequest.getMethod());
+        log.debug("uri : {}", httpRequest.getRequestURI());
+        log.debug("client-closed : {}", client.isClosed());
+
+        /*StringBuilder requestBuilder = new StringBuilder();
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
              BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
         ) {
@@ -91,14 +95,16 @@ public class HttpJob implements Executable {
             log.error("socket error : {}", e.getMessage(), e);
         } finally {
             close();
-        }
+        }*/
     }
 
     // =================================================================================================================
 
     private void close() {
         try {
-            if (!client.isClosed()) { client.close(); }
+            if (!client.isClosed()) {
+                client.close();
+            }
         } catch (IOException e) {
             log.error("{}", e.getMessage(), e);
             throw new RuntimeException(e);
