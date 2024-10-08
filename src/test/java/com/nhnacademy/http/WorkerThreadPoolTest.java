@@ -12,6 +12,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.platform.commons.function.Try;
 import org.junit.platform.commons.util.ReflectionUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @Slf4j
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class WorkerThreadPoolTest {
