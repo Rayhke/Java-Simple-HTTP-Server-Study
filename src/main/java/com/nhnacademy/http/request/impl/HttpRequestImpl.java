@@ -46,18 +46,22 @@ public class HttpRequestImpl implements HttpRequest {
 
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
-                if (StringUtils.isNullOrEmpty(line)) {
-                    break;
-                }
-                log.debug("{}", line);
-                String[] data = line.split(HEADER_DELIMITER);
-                setAttribute(data[0].trim(), data[1].trim());
+                if (StringUtils.isNullOrEmpty(line)) { break; }
+                lineParser(line);
             }
             log.debug("------HTTP-REQUEST_end()");
         } catch (IOException e) {
             log.debug("{}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
+    }
+
+    private void lineParser(String line) {
+        log.debug("{}", line);
+        String[] data = line.split(HEADER_DELIMITER);
+        String key = data[0].trim();
+        String value = data[1].trim();
+        headerMap.put(key, value);
     }
 
     private void firstLineParser(String line) {
@@ -73,7 +77,7 @@ public class HttpRequestImpl implements HttpRequest {
             // =========================================================================
             // method
             httpRequestMethod = data[0];
-            setAttribute(KEY_HTTP_METHOD, httpRequestMethod);
+            headerMap.put(KEY_HTTP_METHOD, httpRequestMethod);
             // =========================================================================
             // path
             int urlLastIndex = data[1].length();
@@ -82,7 +86,7 @@ public class HttpRequestImpl implements HttpRequest {
                 queryStringExist = true;
             }
             httpRequestPath = data[1].substring(0, urlLastIndex);
-            setAttribute(KEY_REQUEST_PATH, httpRequestPath);
+            headerMap.put(KEY_REQUEST_PATH, httpRequestPath);
             // =========================================================================
             // query
             if (queryStringExist) {
@@ -90,12 +94,12 @@ public class HttpRequestImpl implements HttpRequest {
                         .split("&");
                 for (String query : queryList) {
                     String[] parse = query.split("=");
-                    String key = parse[0];
-                    String value = parse[1];
+                    String key = parse[0].trim();
+                    String value = parse[1].trim();
                     log.debug("[key : {} | value : {}]", key, value);
                     queryMap.put(key, value);
                 }
-                setAttribute(KEY_QUERY_PARAM_MAP, queryMap);
+                headerMap.put(KEY_QUERY_PARAM_MAP, queryMap);
             }
             // =========================================================================
         }
@@ -123,7 +127,7 @@ public class HttpRequestImpl implements HttpRequest {
     @Override
     public Map<String, String> getParameterMap() {
         // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
-        return Stream.of(getAttribute(KEY_QUERY_PARAM_MAP))
+        return Stream.of(headerMap.get(KEY_QUERY_PARAM_MAP))
                 .filter(Map.class::isInstance) // (o -> o instanceof Map)
                 .map(o -> (Map<String, String>) o)
                 .findFirst()
@@ -137,16 +141,16 @@ public class HttpRequestImpl implements HttpRequest {
 
     @Override
     public String getMethod() {
-        return getParameter(KEY_HTTP_METHOD);
+        return getHeader(KEY_HTTP_METHOD);
     }
 
     @Override
     public String getRequestURI() {
-        return getParameter(KEY_REQUEST_PATH);
+        return getHeader(KEY_REQUEST_PATH);
     }
 
     @Override
     public String getHeader(String name) {
-        return "";
+        return String.valueOf(headerMap.get(name));
     }
 }
