@@ -116,6 +116,7 @@ public class HttpRequestImpl implements HttpRequest {
 
     @Override
     public Map<String, String> getParameterMap() {
+        // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
         return Stream.of(getAttribute(KEY_QUERY_PARAM_MAP))
                 .filter(Map.class::isInstance) // (o -> o instanceof Map)
                 .map(o -> (Map<String, String>) o)
