@@ -1,5 +1,9 @@
 package com.nhnacademy.http.channel;
 
+import com.nhnacademy.http.request.HttpRequest;
+import com.nhnacademy.http.request.impl.HttpRequestImpl;
+import com.nhnacademy.http.response.HttpResponse;
+import com.nhnacademy.http.response.impl.HttpResponseImpl;
 import com.nhnacademy.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +18,10 @@ import java.util.Objects;
 @Slf4j
 public class HttpJob implements Executable {
 
+    private final HttpRequest httpRequest;
+
+    private final HttpResponse httpResponse;
+
     private final Socket client;
 
     public HttpJob(Socket client) {
@@ -21,6 +29,8 @@ public class HttpJob implements Executable {
             throw new IllegalArgumentException("client Socket is null");
         }
         this.client = client;
+        this.httpRequest = new HttpRequestImpl(this.client);
+        this.httpResponse = new HttpResponseImpl(this.client);
     }
 
     // =================================================================================================================
@@ -54,6 +64,7 @@ public class HttpJob implements Executable {
                 }
             }
             log.debug("------HTTP-REQUEST_end()");
+
 
             StringBuilder responseBody = new StringBuilder();
             responseBody.append("<html>");
