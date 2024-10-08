@@ -18,8 +18,11 @@ import java.util.stream.Stream;
 public class HttpRequestImpl implements HttpRequest {
 
     private static final String KEY_HTTP_METHOD = "HTTP-METHOD";
+
     private static final String KEY_QUERY_PARAM_MAP = "HTTP-QUERY-PARAM-MAP";
+
     private static final String KEY_REQUEST_PATH = "HTTP-REQUEST-PATH";
+
     private static final String HEADER_DELIMITER = ":";
 
     private final Map<String, Object> headerMap;

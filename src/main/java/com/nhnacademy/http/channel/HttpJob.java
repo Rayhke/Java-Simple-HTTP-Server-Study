@@ -4,14 +4,9 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.impl.HttpResponseImpl;
-import com.nhnacademy.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Objects;
 

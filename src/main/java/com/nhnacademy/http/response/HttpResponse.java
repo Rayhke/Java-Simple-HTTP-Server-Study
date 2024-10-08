@@ -14,10 +14,10 @@ public interface HttpResponse {
      * */
     PrintWriter getWriter() throws IOException;
 
+    String getCharacterEncoding();
+
     /**
      * charset – a String specifying only the character set defined by IANA Character Sets
      * */
     void setCharacterEncoding(String charset);
-
-    String getCharacterEncoding();
 }
