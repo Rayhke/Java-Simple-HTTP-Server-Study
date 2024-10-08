@@ -105,28 +105,8 @@ public class HttpRequestImpl implements HttpRequest {
     // method
 
     @Override
-    public String getMethod() {
-        return getParameter(KEY_HTTP_METHOD);
-    }
-
-    @Override
-    public String getParameter(String name) {
-        return (String) getAttribute(name);
-    }
-
-    @Override
-    public Map<String, String> getParameterMap() {
-        // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
-        return Stream.of(getAttribute(KEY_QUERY_PARAM_MAP))
-                .filter(Map.class::isInstance) // (o -> o instanceof Map)
-                .map(o -> (Map<String, String>) o)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
-    }
-
-    @Override
-    public String getHeader(String name) {
-        return "";
+    public Object getAttribute(String name) { // 원조 기능
+        return attributeMap.get(name);
     }
 
     @Override
@@ -141,12 +121,32 @@ public class HttpRequestImpl implements HttpRequest {
     }
 
     @Override
-    public Object getAttribute(String name) { // 원조 기능
-        return attributeMap.get(name);
+    public Map<String, String> getParameterMap() {
+        // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
+        return Stream.of(getAttribute(KEY_QUERY_PARAM_MAP))
+                .filter(Map.class::isInstance) // (o -> o instanceof Map)
+                .map(o -> (Map<String, String>) o)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
+    }
+
+    @Override
+    public String getParameter(String name) {
+        return getParameterMap().get(name);
+    }
+
+    @Override
+    public String getMethod() {
+        return getParameter(KEY_HTTP_METHOD);
     }
 
     @Override
     public String getRequestURI() {
         return getParameter(KEY_REQUEST_PATH);
+    }
+
+    @Override
+    public String getHeader(String name) {
+        return "";
     }
 }
