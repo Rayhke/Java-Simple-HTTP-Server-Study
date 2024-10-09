@@ -21,7 +21,7 @@ public class HttpJob implements Executable {
 
     public HttpJob(Socket client) {
         if (Objects.isNull(client)) {
-            throw new IllegalArgumentException("client Socket is null");
+            throw new IllegalArgumentException("client Socket is Null!");
         }
         this.client = client;
         this.httpRequest = new HttpRequestImpl(this.client);
@@ -33,6 +33,14 @@ public class HttpJob implements Executable {
 
     public Socket getClient() {
         return client;
+    }
+
+    public HttpRequest getHttpRequest() {
+        return httpRequest;
+    }
+
+    public HttpResponse getHttpResponse() {
+        return httpResponse;
     }
 
     @Override

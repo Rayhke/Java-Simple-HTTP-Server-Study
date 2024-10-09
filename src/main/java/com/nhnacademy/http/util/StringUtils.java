@@ -1,4 +1,4 @@
-package com.nhnacademy.util;
+package com.nhnacademy.http.util;
 
 import java.util.Objects;
 

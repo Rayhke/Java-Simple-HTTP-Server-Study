@@ -1,7 +1,7 @@
 package com.nhnacademy.http.response.impl;
 
 import com.nhnacademy.http.response.HttpResponse;
-import com.nhnacademy.util.StringUtils;
+import com.nhnacademy.http.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.DataOutputStream;

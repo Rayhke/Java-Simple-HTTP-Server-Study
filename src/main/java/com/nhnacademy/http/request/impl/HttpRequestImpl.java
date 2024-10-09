@@ -1,14 +1,13 @@
 package com.nhnacademy.http.request.impl;
 
 import com.nhnacademy.http.request.HttpRequest;
-import com.nhnacademy.util.StringUtils;
+import com.nhnacademy.http.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
