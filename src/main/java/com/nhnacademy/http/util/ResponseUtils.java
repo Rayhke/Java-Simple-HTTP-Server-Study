@@ -16,16 +16,21 @@ public class ResponseUtils {
 
     public static final String DEFAULT_404 = "/404.html";
 
+    public static final String DEFAULT_405 = "/405.html";
+
     private ResponseUtils() {}
 
     // TODO : public 연산자가 아닌 원래는 default 연산자였다.
     // 추후 문제가 생길 수 있으니 참고
     public enum HttpStatus {
+
         OK(200, "OK"),
         NOT_FOUND(404, "Not Found"),
+        METHOD_NOT_FOUND(405, "Method Not Allowed"),
         UNKNOWN(-1, "Unknown Status");
 
         private final int code;
+
         private final String description;
 
         HttpStatus(int code, String description) {

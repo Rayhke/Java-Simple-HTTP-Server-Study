@@ -4,13 +4,16 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.service.HttpService;
 import com.nhnacademy.http.util.ResponseUtils;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
 
-@Slf4j
-public class IndexHttpService implements HttpService {
+public class NotFoundHttpService implements HttpService {
 
+    /* NotFoundHttpService 구현
+        - 페이지를 찾을 수 없을 때 /resources/404.html 응답 합니다.
+        - httpStatusCode : 404
+        - Description: Not Found
+     */
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
@@ -19,18 +22,17 @@ public class IndexHttpService implements HttpService {
         // Header - 설정
         String responseHeader = null;
 
-        // PrintWriter 응답
-        try (PrintWriter bufferedWriter = httpResponse.getWriter()
-        ) {
-            responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
-            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(),
+        //PrintWriter 응답
+        try(PrintWriter bufferedWriter = httpResponse.getWriter()
+        ){
+            responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
+            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(),
                                                                 httpResponse.getCharacterEncoding(),
                                                                 responseBody.getBytes(httpResponse.getCharacterEncoding()).length);
             bufferedWriter.write(responseHeader);
             bufferedWriter.write(responseBody);
             bufferedWriter.flush();
         } catch (Exception e) {
-            log.error("{}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

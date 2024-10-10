@@ -4,10 +4,9 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.impl.HttpResponseImpl;
-import com.nhnacademy.http.util.ResponseUtils;
+import com.nhnacademy.http.service.HttpService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
@@ -51,6 +50,10 @@ public class HttpJob implements Executable {
         log.debug("method : {}", httpRequest.getMethod());
         log.debug("uri : {}", httpRequest.getRequestURI());
         log.debug("client-closed : {}", client.isClosed());
+
+        HttpService httpService = null;
+
+
 
         /*boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
         String responseBody = null;
