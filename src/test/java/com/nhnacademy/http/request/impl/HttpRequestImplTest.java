@@ -37,9 +37,9 @@ class HttpRequestImplTest {
 
     private static final String DEFAULT_REQUEST_URL = "/index.html";
 
-    static HttpRequest request;
+    private static HttpRequest request;
 
-    static Socket client = Mockito.mock(Socket.class);
+    private static Socket client = Mockito.mock(Socket.class);
 
     @BeforeAll
     static void setUp() throws IOException {
