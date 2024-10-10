@@ -13,7 +13,9 @@ public class ResponseUtils {
 
     private ResponseUtils() {}
 
-    enum HttpStatus {
+    // TODO : public 연산자가 아닌 원래는 default 연산자였다.
+    // 추후 문제가 생길 수 있으니 참고
+    public enum HttpStatus {
         OK(200, "OK"),
         NOT_FOUND(404, "Not Found"),
         UNKNOWN(-1, "Unknown Status");
@@ -36,16 +38,14 @@ public class ResponseUtils {
 
         public static HttpStatus getStatusFromCode(int code) {
             for (HttpStatus status : HttpStatus.values()) {
-                if (status.getCode() == code) {
-                    return status;
-                }
+                if (status.getCode() == code) { return status; }
             }
             return UNKNOWN;
         }
     }
 
     /**
-     * /src/main/resourcs 하위에 filePath 에 해당되는 파일이 존재하는 체크 합니다.
+     * /src/main/resources 하위에 filePath 에 해당되는 파일이 존재하는 체크 합니다.
      *
      * @param filePath, filePath -> requestURl -> ex) /index.html
      * @return true or false
@@ -113,11 +113,11 @@ public class ResponseUtils {
         */
 
         StringBuilder responseHeader = new StringBuilder();
-        responseHeader.append(String.format("HTTP/1.0 %d %s%s", httpStatusCode, HttpStatus.getStatusFromCode(httpStatusCode).getDescription(), CRLF));
-        responseHeader.append(String.format("Server: HTTP server/0.1%s", CRLF));
-        responseHeader.append(String.format("Content-type: text/html; charset=%s%s", charset, CRLF));
-        responseHeader.append(String.format("Connection: Closed%s", CRLF));
-        responseHeader.append(String.format("Content-Length:%d %s%s", contentLength, System.lineSeparator(), CRLF));
+        responseHeader.append(String.format("HTTP/1.0 %d %s%s", httpStatusCode, HttpStatus.getStatusFromCode(httpStatusCode).getDescription(), StringUtils.CRLF));
+        responseHeader.append(String.format("Server: HTTP server/0.1%s", StringUtils.CRLF));
+        responseHeader.append(String.format("Content-type: text/html; charset=%s%s", charset, StringUtils.CRLF));
+        responseHeader.append(String.format("Connection: Closed%s", StringUtils.CRLF));
+        responseHeader.append(String.format("Content-Length:%d %s%s", contentLength, System.lineSeparator(), StringUtils.CRLF));
         return responseHeader.toString();
     }
 }

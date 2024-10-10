@@ -93,7 +93,7 @@ public class HttpRequestImpl implements HttpRequest {
             // query
             if (queryStringExist) {
                 String[] queryList = data[1].substring(urlLastIndex + 1)
-                        .split("&");
+                                            .split("&");
                 for (String query : queryList) {
                     String[] parse = query.split("=");
                     String key = parse[0].trim();
@@ -130,10 +130,10 @@ public class HttpRequestImpl implements HttpRequest {
     public Map<String, String> getParameterMap() {
         // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
         return Stream.of(headerMap.get(KEY_QUERY_PARAM_MAP))
-                .filter(Map.class::isInstance) // (o -> o instanceof Map)
-                .map(o -> (Map<String, String>) o)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
+                        .filter(Map.class::isInstance) // (o -> o instanceof Map)
+                        .map(o -> (Map<String, String>) o)
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
     }
 
     @Override

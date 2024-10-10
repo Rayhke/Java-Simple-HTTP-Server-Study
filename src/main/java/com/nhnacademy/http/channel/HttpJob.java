@@ -4,8 +4,10 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.impl.HttpResponseImpl;
+import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
@@ -46,59 +48,38 @@ public class HttpJob implements Executable {
     @Override
     public void execute() {
 
-        // HttpJob 는 execute() method 를 구현 합니다. step2~3 참고하여 구현합니다.
-        // <html><body><h1>thread-0:hello java</h1></body>
-        // <html><body><h1>thread-1:hello java</h1></body>
-        // <html><body><h1>thread-2:hello java</h1></body>
-        // ...
-
         log.debug("method : {}", httpRequest.getMethod());
         log.debug("uri : {}", httpRequest.getRequestURI());
         log.debug("client-closed : {}", client.isClosed());
 
-        /*StringBuilder requestBuilder = new StringBuilder();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()))
+        boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
+        String responseBody = null;
+        String responseHeader = null;
+
+        try (BufferedWriter bufferedWriter = new BufferedWriter(httpResponse.getWriter())
         ) {
-            log.debug("------HTTP-REQUEST_start()");
-            while (true) {
-                String line = bufferedReader.readLine();
-                requestBuilder.append(line);
-                log.debug("{}", line);
+            responseBody = (urlIsExist) ?
+                    ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI())
+                    : ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
+            responseHeader = (urlIsExist) ?
+                    ResponseUtils.createResponseHeader(
+                            ResponseUtils.HttpStatus.OK.getCode(),          // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
+                            httpResponse.getCharacterEncoding(),
+                            responseBody.getBytes(httpResponse.getCharacterEncoding()).length)  // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
+                    : ResponseUtils.createResponseHeader(
+                            ResponseUtils.HttpStatus.NOT_FOUND.getCode(),   // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
+                            httpResponse.getCharacterEncoding(),
+                            responseBody.getBytes(httpResponse.getCharacterEncoding()).length); // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
 
-                if (StringUtils.isNullOrEmpty(line)) {
-                    break;
-                }
-            }
-            log.debug("------HTTP-REQUEST_end()");
-
-
-            StringBuilder responseBody = new StringBuilder();
-            responseBody.append("<html>");
-            responseBody.append("<body>");
-            responseBody.append(String.format("<h1>[%s] : Hello Java</h1>", Thread.currentThread().getName()));
-            responseBody.append("</body>");
-            responseBody.append("</html>");
-
-            StringBuilder responseHeader = new StringBuilder();
-            responseHeader.append(String.format("HTTP/1.0 200 OK%s", StringUtils.CRLF));
-            responseHeader.append(String.format("Server: HTTP server/0.1%s", StringUtils.CRLF));
-            responseHeader.append(String.format("Content-type: text/html; charset=%s%s", "UTF-8", StringUtils.CRLF));
-            responseHeader.append(String.format("Connection: Closed%s", StringUtils.CRLF));
-            responseHeader.append(String.format("Content-Length:%d %s%s", responseBody.toString().getBytes().length, StringUtils.CRLF, StringUtils.CRLF));
-
-            bufferedWriter.write(responseHeader.toString());
-            bufferedWriter.write(responseBody.toString());
+            bufferedWriter.write(responseHeader);
+            bufferedWriter.write(responseBody);
             bufferedWriter.flush();
-
-            log.debug("header : {}", responseHeader);
-            log.debug("body : {}", responseBody);
-
         } catch (IOException e) {
-            log.error("socket error : {}", e.getMessage(), e);
+            log.error("{}", e.getMessage(), e);
+            throw new RuntimeException(e);
         } finally {
-            close();
-        }*/
+            close(); // 이 시점에서 HttpJob 에 있는 HttpRequest 와 HttpResponse 도 버림
+        }
     }
 
     // =================================================================================================================
@@ -106,6 +87,10 @@ public class HttpJob implements Executable {
     private void close() {
         try {
             if (!client.isClosed()) {
+                client.shutdownInput();
+                client.shutdownOutput();
+                log.debug("client -> Input : {}, Output : {}",
+                        client.isInputShutdown(), client.isOutputShutdown());
                 client.close();
             }
         } catch (IOException e) {
