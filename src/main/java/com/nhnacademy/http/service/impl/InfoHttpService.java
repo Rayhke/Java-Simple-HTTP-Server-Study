@@ -4,6 +4,7 @@ import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.service.HttpService;
 import com.nhnacademy.http.util.ResponseUtils;
+import com.nhnacademy.http.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
@@ -49,9 +50,9 @@ public class InfoHttpService implements HttpService {
         // PrintWriter 를 이용한 응답
         try (PrintWriter bufferedWriter = httpResponse.getWriter()
         ) {
-            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(),
-                                                                httpResponse.getCharacterEncoding(),
-                                                                responseBody.getBytes(httpResponse.getCharacterEncoding()).length);
+            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(),
+                                                                StringUtils.DEFAULT_CHARSET,
+                                                                responseBody.getBytes(StringUtils.DEFAULT_CHARSET).length);
             bufferedWriter.write(responseHeader);
             bufferedWriter.write(responseBody);
             bufferedWriter.flush();

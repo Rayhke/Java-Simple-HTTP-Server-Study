@@ -7,6 +7,8 @@ public final class StringUtils {
     // 운영체제에 따라 줄바꿈을 맞춰서 해줌
     public static final String CRLF = System.lineSeparator();
 
+    public static final String DEFAULT_CHARSET = "UTF-8";
+
     private StringUtils() {}
 
     // StringUtils.isEmpty() 과 비슷하다.
