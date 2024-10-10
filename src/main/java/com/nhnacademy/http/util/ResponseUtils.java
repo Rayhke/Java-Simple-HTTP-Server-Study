@@ -1,5 +1,7 @@
 package com.nhnacademy.http.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,11 +9,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Objects;
 
+@Slf4j
 public class ResponseUtils {
 
     public static final String DEFAULT_404 = "/404.html";
 
-    private ResponseUtils() {}
+    private ResponseUtils() {
+    }
 
     // TODO : public 연산자가 아닌 원래는 default 연산자였다.
     // 추후 문제가 생길 수 있으니 참고
@@ -38,7 +42,9 @@ public class ResponseUtils {
 
         public static HttpStatus getStatusFromCode(int code) {
             for (HttpStatus status : HttpStatus.values()) {
-                if (status.getCode() == code) { return status; }
+                if (status.getCode() == code) {
+                    return status;
+                }
             }
             return UNKNOWN;
         }
@@ -51,16 +57,12 @@ public class ResponseUtils {
      * @return true or false
      */
     public static boolean isExist(String filePath) {
-        /* TODO#7 isExist를 구현합니다.
+        /*
            ex) filePath=/index.html 이면 /resources/index.html 이 존재하면 true, 존재하지 않다면 false를 반환 합니다.
            ex) filePath=/ false 를 반환 합니다.
         */
-
         // TODO : 실제론 index.html 을 반환해주는 게 맞지만, step05 기준으론 false 로 간주
-        if (filePath.equals("/")) {
-            return false;
-        }
-
+        if (filePath.equals("/")) { return false; }
         URL url = ResponseUtils.class.getResource(filePath);
         return Objects.nonNull(url);
     }
@@ -71,20 +73,24 @@ public class ResponseUtils {
      * @throws IOException
      */
     public static String tryGetBodyFromFile(String filePath) throws IOException {
-        /* TODO#9 tryGetBodyFromFile 구현 합니다.
+        /* tryGetBodyFromFile 구현 합니다.
          * ex) filePath = /index.html -> /resources/index.html 파일을 읽어서 반환 합니다.
          * */
 
         StringBuilder responseBody = new StringBuilder();
         try (InputStream inputStream = ResponseUtils.class.getResourceAsStream(filePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
-            while (true) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                responseBody.append(line);
+            }
+            /*while(true) {
                 String line = reader.readLine();
-                if (Objects.isNull(line)) {
+                if(Objects.isNull(line)){
                     break;
                 }
                 responseBody.append(line);
-            }
+            }*/
         }
         return responseBody.toString();
     }
@@ -96,7 +102,7 @@ public class ResponseUtils {
      * @return responseHeader 를 String 반환
      */
     public static String createResponseHeader(int httpStatusCode, String charset, int contentLength) {
-        /* TODO#11 responseHeader를 생성 합니다. 아래 header 예시를 참고
+        /* responseHeader 를 생성 합니다. 아래 header 예시를 참고
 
             - 200 OK
             HTTP/1.0 200 OK

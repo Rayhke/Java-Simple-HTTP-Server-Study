@@ -46,7 +46,7 @@ public class HttpJob implements Executable {
     }
 
     @Override
-    public void execute() throws IOException {
+    public void execute() {
 
         log.debug("method : {}", httpRequest.getMethod());
         log.debug("uri : {}", httpRequest.getRequestURI());
@@ -78,6 +78,7 @@ public class HttpJob implements Executable {
             log.error("{}", e.getMessage(), e);
             throw new RuntimeException(e);
         } finally {
+            // TODO : 여기로 들어왔을 시점엔 이미 client 가 닫혀있음.
             close(); // 이 시점에서 HttpJob 에 있는 HttpRequest 와 HttpResponse 도 버림
         }
     }

@@ -1,18 +1,6 @@
-/*
- * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * + Copyright 2024. NHN Academy Corp. All rights reserved.
- * + * While every precaution has been taken in the preparation of this resource,  assumes no
- * + responsibility for errors or omissions, or for damages resulting from the use of the information
- * + contained herein
- * + No part of this resource may be reproduced, stored in a retrieval system, or transmitted, in any
- * + form or by any means, electronic, mechanical, photocopying, recording, or otherwise, without the
- * + prior written permission.
- * +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- */
+package com.nhnacademy.http.request.impl;
 
-package com.nhnacademy.http.request;
-
-import com.nhnacademy.http.request.impl.HttpRequestImpl;
+import com.nhnacademy.http.request.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,12 +16,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class HttpRequestImplTest {
+
+    private static final String DEFAULT_METHOD_TYPE = "GET";
+
+    private static final String DEFAULT_QUERY_STRING_ID_KEY = "id";
+
+    private static final String DEFAULT_QUERY_STRING_ID_VALUE = "marco";
+
+    private static final String DEFAULT_QUERY_STRING_NAME_KEY = "name";
+
+    private static final String DEFAULT_QUERY_STRING_NAME_VALUE = "마르코";
+
+    private static final String DEFAULT_QUERY_STRING_AGE_KEY = "age";
+
+    private static final String DEFAULT_QUERY_STRING_AGE_VALUE = "40";
+
+    private static final String DEFAULT_REQUEST_URL = "/index.html";
 
     static HttpRequest request;
 
@@ -62,37 +64,35 @@ class HttpRequestImplTest {
         assertInstanceOf(HttpRequest.class, request);
     }
 
-    @Test
     @DisplayName("getMethod() = GET")
+    @Test
     void getMethod() {
-        //TODO#101 request method를 검증 합니다.
-
+        Assertions.assertEquals(DEFAULT_METHOD_TYPE, request.getMethod());
     }
 
-    @Test
     @DisplayName("getParameterById : id=marco")
+    @Test
     void getParameterById() {
-        //TODO#102 id queryString을 검증 합니다.
-
+        Assertions.assertEquals(DEFAULT_QUERY_STRING_ID_VALUE,
+                request.getParameter(DEFAULT_QUERY_STRING_ID_KEY));
     }
 
-    @Test
     @DisplayName("getParameterByName : name=마르코")
+    @Test
     void getParameterByName() {
-        //TODO#103 name queryString을 검증 합니다.
-
+        Assertions.assertEquals(DEFAULT_QUERY_STRING_NAME_VALUE,
+                request.getParameter(DEFAULT_QUERY_STRING_NAME_KEY));
     }
 
-    @Test
     @DisplayName("getParameterByAge : age=40")
+    @Test
     void getParameterByAge() {
-        //TODO#104 age queryString을 검증 합니다.
-
+        Assertions.assertEquals(DEFAULT_QUERY_STRING_AGE_VALUE,
+                request.getParameter(DEFAULT_QUERY_STRING_AGE_KEY));
     }
 
     @Test
     void getParameterMap() {
-
         Map<String, Object> expected = new HashMap<>();
         expected.put("id", "marco");
         expected.put("age", "40");
@@ -114,7 +114,7 @@ class HttpRequestImplTest {
     @Test
     void attributeTest() {
         request.setAttribute("numberList", List.of(1, 2, 3, 4, 5));
-        request.setAttribute("count", 1l);
+        request.setAttribute("count", 1L);
         request.setAttribute("name", "엔에이치엔아카데미");
         long actual = (long) request.getAttribute("count");
         String nhnacademy = (String) request.getAttribute("name");
@@ -126,11 +126,10 @@ class HttpRequestImplTest {
         });
     }
 
-    @Test
     @DisplayName("URI=/index.html")
+    @Test
     void getRequestURI() {
-        //TODO#105  requestURI()를 검증 합니다.
-
+        Assertions.assertEquals(DEFAULT_REQUEST_URL,
+                request.getRequestURI());
     }
-
 }
