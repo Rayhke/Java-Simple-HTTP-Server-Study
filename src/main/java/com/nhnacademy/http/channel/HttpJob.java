@@ -52,7 +52,7 @@ public class HttpJob implements Executable {
         log.debug("uri : {}", httpRequest.getRequestURI());
         log.debug("client-closed : {}", client.isClosed());
 
-        boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
+        /*boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
         String responseBody = null;
         String responseHeader = null;
         try (BufferedWriter bufferedWriter = new BufferedWriter(httpResponse.getWriter())
@@ -79,7 +79,7 @@ public class HttpJob implements Executable {
         } finally {
             // TODO : 여기로 들어왔을 시점엔 이미 client 가 닫혀있음.
             close(); // 이 시점에서 HttpJob 에 있는 HttpRequest 와 HttpResponse 도 버림
-        }
+        }*/
     }
 
     // =================================================================================================================
