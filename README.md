@@ -1,3 +1,3 @@
 # Java Simple HTTP Server Study
 
-## step - 06
+## step - 07
