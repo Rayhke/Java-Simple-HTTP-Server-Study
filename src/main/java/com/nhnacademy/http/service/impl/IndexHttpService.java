@@ -14,7 +14,7 @@ public class IndexHttpService implements HttpService {
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
-        String responseBody = null;
+        String responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
 
         // Header - 설정
         String responseHeader = null;
@@ -22,7 +22,8 @@ public class IndexHttpService implements HttpService {
         // PrintWriter 응답
         try (PrintWriter bufferedWriter = httpResponse.getWriter()
         ) {
-            responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
+            // TODO : 저기서 contentLength 는 문자 타입에 따라 문자 하나의 값이 천차 만별이다.
+            // 문자 하나 당, 1 ~ 4 byte 갈린다. (한국어는 2 byte)
             responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(),
                                                                 httpResponse.getCharacterEncoding(),
                                                                 responseBody.getBytes(httpResponse.getCharacterEncoding()).length);

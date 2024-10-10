@@ -10,7 +10,7 @@ import java.net.URL;
 import java.util.Objects;
 
 @Slf4j
-public class ResponseUtils {
+public final class ResponseUtils {
 
     private static final String DEFAULT_CHARSET_NAME = "UTF-8";
 
@@ -76,7 +76,7 @@ public class ResponseUtils {
      * @return String , index.html 파일을 읽고 String으로 반환
      * @throws IOException
      */
-    public static String tryGetBodyFromFile(String filePath) throws IOException {
+    public static String tryGetBodyFromFile(String filePath) {
         /* tryGetBodyFromFile 구현 합니다.
          * ex) filePath = /index.html -> /resources/index.html 파일을 읽어서 반환 합니다.
          * */
@@ -94,6 +94,8 @@ public class ResponseUtils {
                 }
                 responseBody.append(line);
             }*/
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return responseBody.toString();
     }

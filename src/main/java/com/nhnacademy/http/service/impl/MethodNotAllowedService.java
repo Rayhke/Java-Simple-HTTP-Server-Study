@@ -20,7 +20,7 @@ public class MethodNotAllowedService implements HttpService {
     @Override
     public void service(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
-        String responseBody = null;
+        String responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_405);
 
         // Header - 설정
         String responseHeader = null;
@@ -28,7 +28,6 @@ public class MethodNotAllowedService implements HttpService {
         // PrintWriter 응답
         try (PrintWriter bufferedWriter = httpResponse.getWriter();
         ) {
-            responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_405);
             responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.METHOD_NOT_FOUND.getCode(),
                                                                 httpResponse.getCharacterEncoding(),
                                                                 responseBody.getBytes(httpResponse.getCharacterEncoding()).length);

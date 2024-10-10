@@ -28,7 +28,7 @@ public class InfoHttpService implements HttpService {
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
-        String responseBody = null;
+        String responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
 
         String id = httpRequest.getParameter("id");
         String name = httpRequest.getParameter("name");
@@ -39,18 +39,17 @@ public class InfoHttpService implements HttpService {
         log.debug("name : {}", name);
         log.debug("age : {}", age);
 
+        responseBody = responseBody.replace("${id}", id);
+        responseBody = responseBody.replace("${name}", name);
+        responseBody = responseBody.replace("${age}", age);
+
         // Header - 설정
         String responseHeader = null;
 
         // PrintWriter 를 이용한 응답
         try (PrintWriter bufferedWriter = httpResponse.getWriter()
         ) {
-            responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
-            responseBody = responseBody.replace("${id}", id);
-            responseBody = responseBody.replace("${name}", name);
-            responseBody = responseBody.replace("${age}", age);
-
-            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(),
+            responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(),
                                                                 httpResponse.getCharacterEncoding(),
                                                                 responseBody.getBytes(httpResponse.getCharacterEncoding()).length);
             bufferedWriter.write(responseHeader);

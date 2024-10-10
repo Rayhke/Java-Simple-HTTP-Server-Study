@@ -17,7 +17,7 @@ public class NotFoundHttpService implements HttpService {
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
-        String responseBody = null;
+        String responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
 
         // Header - 설정
         String responseHeader = null;
@@ -25,7 +25,6 @@ public class NotFoundHttpService implements HttpService {
         //PrintWriter 응답
         try(PrintWriter bufferedWriter = httpResponse.getWriter()
         ){
-            responseBody = ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
             responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(),
                                                                 httpResponse.getCharacterEncoding(),
                                                                 responseBody.getBytes(httpResponse.getCharacterEncoding()).length);
