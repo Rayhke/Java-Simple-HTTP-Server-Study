@@ -71,7 +71,8 @@ public class HttpJob implements Executable {
                 }
                 httpService.service(getHttpRequest(), getHttpResponse());
             } catch (MethodNotAllowed e) {
-                new MethodNotAllowedService().service(getHttpRequest(), getHttpResponse());
+                httpService = new MethodNotAllowedService();
+                httpService.service(getHttpRequest(), getHttpResponse());
                 log.error("{}", e.getCause(), e);
             }
         } else {

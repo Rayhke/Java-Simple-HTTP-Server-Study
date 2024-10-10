@@ -16,7 +16,6 @@ public class MethodNotAllowedService implements HttpService {
         - /resources/405.html 응답 합니다.
      */
 
-    // TODO : 제대로 구현한 건지 몰?루
     @Override
     public void service(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
