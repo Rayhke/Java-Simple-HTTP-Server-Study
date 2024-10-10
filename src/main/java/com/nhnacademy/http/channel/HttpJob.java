@@ -46,7 +46,7 @@ public class HttpJob implements Executable {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws IOException {
 
         log.debug("method : {}", httpRequest.getMethod());
         log.debug("uri : {}", httpRequest.getRequestURI());
@@ -63,11 +63,11 @@ public class HttpJob implements Executable {
                     : ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
             responseHeader = (urlIsExist) ?
                     ResponseUtils.createResponseHeader(
-                            ResponseUtils.HttpStatus.OK.getCode(),          // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
+                            ResponseUtils.HttpStatus.OK.getCode(),                              // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
                             httpResponse.getCharacterEncoding(),
                             responseBody.getBytes(httpResponse.getCharacterEncoding()).length)  // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
                     : ResponseUtils.createResponseHeader(
-                            ResponseUtils.HttpStatus.NOT_FOUND.getCode(),   // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
+                            ResponseUtils.HttpStatus.NOT_FOUND.getCode(),                       // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
                             httpResponse.getCharacterEncoding(),
                             responseBody.getBytes(httpResponse.getCharacterEncoding()).length); // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
 

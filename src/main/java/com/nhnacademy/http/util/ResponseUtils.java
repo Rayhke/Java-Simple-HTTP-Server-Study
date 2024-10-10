@@ -52,12 +52,15 @@ public class ResponseUtils {
      */
     public static boolean isExist(String filePath) {
         /* TODO#7 isExist를 구현합니다.
-           ex) filePat=/index.html 이면 /resources/index.html이 존재하면 true, 존재하지 않다면 false를 반환 합니다.
-           ex) filePath=/ false를 반환 합니다.
+           ex) filePath=/index.html 이면 /resources/index.html 이 존재하면 true, 존재하지 않다면 false를 반환 합니다.
+           ex) filePath=/ false 를 반환 합니다.
         */
+
+        // TODO : 실제론 index.html 을 반환해주는 게 맞지만, step05 기준으론 false 로 간주
         if (filePath.equals("/")) {
             return false;
         }
+
         URL url = ResponseUtils.class.getResource(filePath);
         return Objects.nonNull(url);
     }
