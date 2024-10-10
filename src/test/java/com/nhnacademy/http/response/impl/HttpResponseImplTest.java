@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class HttpResponseImplTest {
 
-    private HttpResponse httpResponse;
+    private static HttpResponse httpResponse;
 
     @BeforeEach
     void setUp() {
@@ -25,15 +25,14 @@ class HttpResponseImplTest {
         httpResponse = new HttpResponseImpl(socket);
     }
 
-    @Test
     @DisplayName("Socket is null")
+    @Test
     void constructor() {
-        //TODO#106 socket null check, IllegalArgumentException이 발생 하는지 검증 합니다.
-
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HttpResponseImpl(null));
     }
 
-    @Test
     @DisplayName("instance of PrintWriter")
+    @Test
     void getWriter() throws IOException {
         Assertions.assertInstanceOf(PrintWriter.class, httpResponse.getWriter());
     }
@@ -44,10 +43,9 @@ class HttpResponseImplTest {
         Assertions.assertEquals("euc-kr", httpResponse.getCharacterEncoding());
     }
 
-    @Test
     @DisplayName("default Character Encoding : utf-8")
+    @Test
     void getCharacterEncoding() {
-        //TODO#107 default getCharacterEncoding()이 'utf-8'인지 검증 합니다.
-
+        Assertions.assertEquals("UTF-8", httpResponse.getCharacterEncoding());
     }
 }
