@@ -12,10 +12,11 @@ import java.util.Objects;
 @Slf4j
 public class ResponseUtils {
 
+    private static final String DEFAULT_CHARSET_NAME = "UTF-8";
+
     public static final String DEFAULT_404 = "/404.html";
 
-    private ResponseUtils() {
-    }
+    private ResponseUtils() {}
 
     // TODO : public 연산자가 아닌 원래는 default 연산자였다.
     // 추후 문제가 생길 수 있으니 참고
@@ -42,9 +43,7 @@ public class ResponseUtils {
 
         public static HttpStatus getStatusFromCode(int code) {
             for (HttpStatus status : HttpStatus.values()) {
-                if (status.getCode() == code) {
-                    return status;
-                }
+                if (status.getCode() == code) { return status; }
             }
             return UNKNOWN;
         }
@@ -76,10 +75,9 @@ public class ResponseUtils {
         /* tryGetBodyFromFile 구현 합니다.
          * ex) filePath = /index.html -> /resources/index.html 파일을 읽어서 반환 합니다.
          * */
-
         StringBuilder responseBody = new StringBuilder();
         try (InputStream inputStream = ResponseUtils.class.getResourceAsStream(filePath);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, DEFAULT_CHARSET_NAME))) {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 responseBody.append(line);

@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 class HttpResponseImplTest {
 
+    private static final String DEFAULT_CHARSET_NAME = "UTF-8";
+
     private static HttpResponse httpResponse;
 
     @BeforeEach
@@ -46,6 +48,6 @@ class HttpResponseImplTest {
     @DisplayName("default Character Encoding : utf-8")
     @Test
     void getCharacterEncoding() {
-        Assertions.assertEquals("UTF-8", httpResponse.getCharacterEncoding());
+        Assertions.assertEquals(DEFAULT_CHARSET_NAME, httpResponse.getCharacterEncoding());
     }
 }

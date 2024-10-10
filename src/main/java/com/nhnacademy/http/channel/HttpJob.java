@@ -55,7 +55,6 @@ public class HttpJob implements Executable {
         boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
         String responseBody = null;
         String responseHeader = null;
-
         try (BufferedWriter bufferedWriter = new BufferedWriter(httpResponse.getWriter())
         ) {
             responseBody = (urlIsExist) ?
