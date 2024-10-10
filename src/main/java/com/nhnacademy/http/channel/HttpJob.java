@@ -1,10 +1,16 @@
 package com.nhnacademy.http.channel;
 
+import com.nhnacademy.http.error.MethodNotAllowed;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.impl.HttpResponseImpl;
 import com.nhnacademy.http.service.HttpService;
+import com.nhnacademy.http.service.impl.IndexHttpService;
+import com.nhnacademy.http.service.impl.InfoHttpService;
+import com.nhnacademy.http.service.impl.MethodNotAllowedService;
+import com.nhnacademy.http.service.impl.NotFoundHttpService;
+import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -52,37 +58,27 @@ public class HttpJob implements Executable {
         log.debug("client-closed : {}", client.isClosed());
 
         HttpService httpService = null;
-
-
-
-        /*boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
-        String responseBody = null;
-        String responseHeader = null;
-        try (BufferedWriter bufferedWriter = new BufferedWriter(httpResponse.getWriter())
-        ) {
-            responseBody = (urlIsExist) ?
-                    ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI())
-                    : ResponseUtils.tryGetBodyFromFile(ResponseUtils.DEFAULT_404);
-            responseHeader = (urlIsExist) ?
-                    ResponseUtils.createResponseHeader(
-                            ResponseUtils.HttpStatus.OK.getCode(),                              // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
-                            httpResponse.getCharacterEncoding(),
-                            responseBody.getBytes(httpResponse.getCharacterEncoding()).length)  // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
-                    : ResponseUtils.createResponseHeader(
-                            ResponseUtils.HttpStatus.NOT_FOUND.getCode(),                       // TODO : 이 부분은 외부 enum을 쓰는 게 아닌, 실제로는 직접 코드를 기입해줘야 함.
-                            httpResponse.getCharacterEncoding(),
-                            responseBody.getBytes(httpResponse.getCharacterEncoding()).length); // TODO : Charset 의 값을 전적으로 외부에 의존하기 때문에 세팅 주의
-
-            bufferedWriter.write(responseHeader);
-            bufferedWriter.write(responseBody);
-            bufferedWriter.flush();
-        } catch (IOException e) {
-            log.error("{}", e.getMessage(), e);
-            throw new RuntimeException(e);
-        } finally {
-            // TODO : 여기로 들어왔을 시점엔 이미 client 가 닫혀있음.
-            close(); // 이 시점에서 HttpJob 에 있는 HttpRequest 와 HttpResponse 도 버림
-        }*/
+        boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
+        if (urlIsExist) {
+            try {
+                switch (httpRequest.getRequestURI()) {
+                    case "/index.html":
+                        httpService = new IndexHttpService(); break;
+                    case "/info.html":
+                        httpService = new InfoHttpService(); break;
+                    default:
+                        httpService = new NotFoundHttpService();
+                }
+                httpService.service(getHttpRequest(), getHttpResponse());
+            } catch (MethodNotAllowed e) {
+                new MethodNotAllowedService().service(getHttpRequest(), getHttpResponse());
+                log.error("{}", e.getCause(), e);
+            }
+        } else {
+            httpService = new NotFoundHttpService();
+            httpService.service(getHttpRequest(), getHttpResponse());
+        }
+        close();
     }
 
     // =================================================================================================================

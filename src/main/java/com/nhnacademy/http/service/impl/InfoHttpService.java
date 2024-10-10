@@ -30,10 +30,10 @@ public class InfoHttpService implements HttpService {
         // Body - 설정
         String responseBody = null;
 
-        String id = httpRequest.getHeader("id");
-        String name = httpRequest.getHeader("name");
+        String id = httpRequest.getParameter("id");
+        String name = httpRequest.getParameter("name");
         name = URLDecoder.decode(name, StandardCharsets.UTF_8);
-        String age = httpRequest.getHeader("age");
+        String age = httpRequest.getParameter("age");
 
         log.debug("id : {}", id);
         log.debug("name : {}", name);

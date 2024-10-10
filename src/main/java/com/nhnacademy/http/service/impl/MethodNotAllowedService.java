@@ -39,9 +39,4 @@ public class MethodNotAllowedService implements HttpService {
             throw new RuntimeException(e);
         }
     }
-
-    @Override
-    public void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-
-    }
 }
