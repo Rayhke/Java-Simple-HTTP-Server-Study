@@ -49,7 +49,7 @@ public class HttpRequestImpl implements HttpRequest {
 
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
-                if (StringUtils.isNullOrEmpty(line)) { break; }
+                if (StringUtils.isNullOrEmpty(line)) break;
                 lineParser(line);
             }
             log.debug("------HTTP-REQUEST_end()");
@@ -59,11 +59,12 @@ public class HttpRequestImpl implements HttpRequest {
         }
     }
 
+    // 애당초 비정상적으로 동작 중이였다.
     private void lineParser(String line) {
         log.debug("{}", line);
-        String[] data = line.split(HEADER_DELIMITER);
-        String key = data[0].trim();
-        String value = data[1].trim();
+        int index = line.indexOf(HEADER_DELIMITER); // String[] data = line.split(":");
+        String key = line.substring(0, index++).trim();
+        String value = line.substring(index).trim();
         headerMap.put(key, value);
     }
 
