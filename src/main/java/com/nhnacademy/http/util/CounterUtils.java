@@ -11,11 +11,15 @@ public final class CounterUtils {
 
     private CounterUtils() {}
 
+    // AtomicLong.class::cast 는 타입 캐스팅이다.
+    // TODO : 의도대로 동작하는 지, 추후 검증할 것
     public static synchronized long increaseAndGet() {
-        return Stream.of(ContextHolder.getApplicationContext().getAttribute(CONTEXT_COUNTER_NAME))
+        return Stream.of(ContextHolder.getApplicationContext()
+                                        .getAttribute(CONTEXT_COUNTER_NAME))
                         .filter(AtomicLong.class::isInstance)
-                        .map(o -> ((AtomicLong) o).incrementAndGet())
+                        .map(AtomicLong.class::cast)
                         .findFirst()
-                        .orElseThrow(IllegalArgumentException::new);
+                        .map(AtomicLong::incrementAndGet)
+                        .orElseThrow(IllegalAccessError::new);
     }
 }

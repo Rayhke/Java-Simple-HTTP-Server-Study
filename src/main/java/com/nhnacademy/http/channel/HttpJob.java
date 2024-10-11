@@ -2,6 +2,7 @@ package com.nhnacademy.http.channel;
 
 import com.nhnacademy.http.context.Context;
 import com.nhnacademy.http.context.ContextHolder;
+import com.nhnacademy.http.context.exception.ObjectNotFoundException;
 import com.nhnacademy.http.service.exception.MethodNotAllowed;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
@@ -66,14 +67,18 @@ public class HttpJob implements Executable {
                                     .filter(HttpService.class::isInstance)
                                     .map(o -> (HttpService) o)
                                     .findFirst()
-                                    .orElse(new NotFoundHttpService())
+                                    .get()
                                     .service(getHttpRequest(), getHttpResponse());
+            } catch (ObjectNotFoundException e) {
+                new NotFoundHttpService()
+                        .service(getHttpRequest(), getHttpResponse());
             } catch (MethodNotAllowed e) {
                 new MethodNotAllowedService()
                         .service(getHttpRequest(), getHttpResponse());
                 log.error("{}", e.getCause(), e);
             }
         } else {
+            // TODO : 위의 부분이 중복되는 느낌이 있다.
             new NotFoundHttpService()
                     .service(getHttpRequest(), getHttpResponse());
         }

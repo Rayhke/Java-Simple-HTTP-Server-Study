@@ -1,9 +1,11 @@
 package com.nhnacademy.http.context;
 
 import com.nhnacademy.http.context.exception.ContextParametersDeleteFail;
+import com.nhnacademy.http.context.exception.ObjectNotFoundException;
 import com.nhnacademy.http.util.StringUtils;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -18,7 +20,8 @@ public class ApplicationContext implements Context {
     @Override
     public Object getAttribute(String name) {
         check(name);
-        return objectMap.get(name);
+        return Optional.ofNullable(objectMap.get(name))
+                .orElseThrow(() -> new ObjectNotFoundException(name));
     }
 
     @Override
