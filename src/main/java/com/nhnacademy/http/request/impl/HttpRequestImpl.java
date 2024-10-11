@@ -30,6 +30,8 @@ public class HttpRequestImpl implements HttpRequest {
 
     private final Socket client;
 
+    private boolean methodType;
+
     public HttpRequestImpl(Socket client) {
         if (Objects.isNull(client)) {
             throw new IllegalArgumentException("client Socket is null");
@@ -49,8 +51,14 @@ public class HttpRequestImpl implements HttpRequest {
 
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
-                if (StringUtils.isNullOrEmpty(line)) break;
-                lineParser(line);
+                if (StringUtils.isNullOrEmpty(line)) {
+                    break;
+                }
+                headerParser(line);
+            }
+
+            if (methodType) {
+                
             }
             log.debug("------HTTP-REQUEST_end()");
         } catch (IOException e) {
@@ -60,7 +68,8 @@ public class HttpRequestImpl implements HttpRequest {
     }
 
     // 애당초 비정상적으로 동작 중이였다.
-    private void lineParser(String line) {
+    //
+    private void headerParser(String line) {
         log.debug("{}", line);
         int index = line.indexOf(HEADER_DELIMITER); // String[] data = line.split(":");
         String key = line.substring(0, index++).trim();
@@ -82,6 +91,7 @@ public class HttpRequestImpl implements HttpRequest {
             // method
             httpRequestMethod = data[0];
             headerMap.put(KEY_HTTP_METHOD, httpRequestMethod);
+            methodType = httpRequestMethod.equals("POST");
             // =========================================================================
             // path
             int urlLastIndex = data[1].length();
@@ -95,7 +105,7 @@ public class HttpRequestImpl implements HttpRequest {
             // query
             if (queryStringExist) {
                 String[] queryList = data[1].substring(urlLastIndex + 1)
-                                            .split("&");
+                        .split("&");
                 for (String query : queryList) {
                     String[] parse = query.split("=");
                     String key = parse[0].trim();
@@ -132,10 +142,10 @@ public class HttpRequestImpl implements HttpRequest {
     public Map<String, String> getParameterMap() {
         // return (Map<String, String>) getAttribute(KEY_QUERY_PARAM_MAP);
         return Stream.of(headerMap.get(KEY_QUERY_PARAM_MAP))
-                        .filter(Map.class::isInstance) // (o -> o instanceof Map)
-                        .map(o -> (Map<String, String>) o)
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
+                .filter(Map.class::isInstance) // (o -> o instanceof Map)
+                .map(o -> (Map<String, String>) o)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
     }
 
     @Override
