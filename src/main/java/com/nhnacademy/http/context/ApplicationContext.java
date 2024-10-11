@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+// Context 에는 객체를 생성 후, (등록 / 삭제) 할 수 있습니다.
+// 즉 공유할 수 있는 환경 입니다.
 public class ApplicationContext implements Context {
 
     private final ConcurrentMap<String, Object> objectMap;

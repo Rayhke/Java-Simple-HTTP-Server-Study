@@ -97,9 +97,8 @@ class ApplicationContextTest {
     @Test
     void getAttribute2() {
         Context context = ContextHolder.getApplicationContext();
-        Assertions.assertThrows(ObjectNotFoundException.class, () -> {
-            context.getAttribute("something");
-        });
+        Assertions.assertThrows(ObjectNotFoundException.class,
+                () -> context.getAttribute("something"));
     }
 
     @DisplayName("getAttribute name is null or empty")
