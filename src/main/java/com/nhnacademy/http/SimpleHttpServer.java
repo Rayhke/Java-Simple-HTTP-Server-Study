@@ -45,7 +45,7 @@ public class SimpleHttpServer {
         context.setAttribute(InfoHttpService.URL, new InfoHttpService());
         context.setAttribute(ResponseUtils.DEFAULT_404, new NotFoundHttpService());
         context.setAttribute(ResponseUtils.DEFAULT_405, new MethodNotAllowedService());
-        context.setAttribute(CounterUtils.CONTEXT_COUNTER_NAME, new AtomicLong(1L));
+        context.setAttribute(CounterUtils.CONTEXT_COUNTER_NAME, new AtomicLong());
     }
 
     // =================================================================================================================

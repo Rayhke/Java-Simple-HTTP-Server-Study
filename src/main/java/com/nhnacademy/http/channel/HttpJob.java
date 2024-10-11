@@ -8,8 +8,6 @@ import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.response.impl.HttpResponseImpl;
 import com.nhnacademy.http.service.HttpService;
-import com.nhnacademy.http.service.impl.IndexHttpService;
-import com.nhnacademy.http.service.impl.InfoHttpService;
 import com.nhnacademy.http.service.impl.MethodNotAllowedService;
 import com.nhnacademy.http.service.impl.NotFoundHttpService;
 import com.nhnacademy.http.util.ResponseUtils;
@@ -64,22 +62,12 @@ public class HttpJob implements Executable {
         if (urlIsExist) {
             try {
                 Context context = ContextHolder.getApplicationContext();
-
                 Stream.of(context.getAttribute(httpRequest.getRequestURI()))
                                     .filter(HttpService.class::isInstance)
                                     .map(o -> (HttpService) o)
                                     .findFirst()
                                     .orElse(new NotFoundHttpService())
                                     .service(getHttpRequest(), getHttpResponse());
-
-                /*switch (httpRequest.getRequestURI()) {
-                    case "/index.html":
-                        httpService = new IndexHttpService(); break;
-                    case "/info.html":
-                        httpService = new InfoHttpService(); break;
-                    default:
-                        httpService = new NotFoundHttpService();
-                }*/
             } catch (MethodNotAllowed e) {
                 new MethodNotAllowedService()
                         .service(getHttpRequest(), getHttpResponse());

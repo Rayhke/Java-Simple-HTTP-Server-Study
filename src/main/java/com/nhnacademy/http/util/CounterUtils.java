@@ -14,8 +14,8 @@ public final class CounterUtils {
     public static synchronized long increaseAndGet() {
         return Stream.of(ContextHolder.getApplicationContext().getAttribute(CONTEXT_COUNTER_NAME))
                         .filter(AtomicLong.class::isInstance)
-                        .map(o -> ((AtomicLong) o).getAndIncrement())
+                        .map(o -> ((AtomicLong) o).incrementAndGet())
                         .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException(""));
+                        .orElseThrow(IllegalArgumentException::new);
     }
 }

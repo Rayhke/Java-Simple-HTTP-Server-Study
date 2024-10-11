@@ -3,6 +3,7 @@ package com.nhnacademy.http.service.impl;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.service.HttpService;
+import com.nhnacademy.http.util.CounterUtils;
 import com.nhnacademy.http.util.ResponseUtils;
 import com.nhnacademy.http.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +38,17 @@ public class InfoHttpService implements HttpService {
         String name = httpRequest.getParameter("name");
         name = URLDecoder.decode(name, StandardCharsets.UTF_8);
         String age = httpRequest.getParameter("age");
+        long count = CounterUtils.increaseAndGet();
 
         log.debug("id : {}", id);
         log.debug("name : {}", name);
         log.debug("age : {}", age);
+        log.debug("count : {}", count);
 
         responseBody = responseBody.replace("${id}", id);
         responseBody = responseBody.replace("${name}", name);
         responseBody = responseBody.replace("${age}", age);
+        responseBody = responseBody.replace("${count}", String.valueOf(count));
 
         // Header - 설정
         String responseHeader = null;
