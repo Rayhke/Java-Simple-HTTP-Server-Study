@@ -1,6 +1,8 @@
 package com.nhnacademy.http.channel;
 
-import com.nhnacademy.http.error.MethodNotAllowed;
+import com.nhnacademy.http.context.Context;
+import com.nhnacademy.http.context.ContextHolder;
+import com.nhnacademy.http.service.exception.MethodNotAllowed;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Slf4j
 public class HttpJob implements Executable {
@@ -57,27 +60,34 @@ public class HttpJob implements Executable {
         log.debug("uri : {}", httpRequest.getRequestURI());
         log.debug("client-closed : {}", client.isClosed());
 
-        HttpService httpService = null;
         boolean urlIsExist = ResponseUtils.isExist(httpRequest.getRequestURI());
         if (urlIsExist) {
             try {
-                switch (httpRequest.getRequestURI()) {
+                Context context = ContextHolder.getApplicationContext();
+
+                Stream.of(context.getAttribute(httpRequest.getRequestURI()))
+                                    .filter(HttpService.class::isInstance)
+                                    .map(o -> (HttpService) o)
+                                    .findFirst()
+                                    .orElse(new NotFoundHttpService())
+                                    .service(getHttpRequest(), getHttpResponse());
+
+                /*switch (httpRequest.getRequestURI()) {
                     case "/index.html":
                         httpService = new IndexHttpService(); break;
                     case "/info.html":
                         httpService = new InfoHttpService(); break;
                     default:
                         httpService = new NotFoundHttpService();
-                }
-                httpService.service(getHttpRequest(), getHttpResponse());
+                }*/
             } catch (MethodNotAllowed e) {
-                httpService = new MethodNotAllowedService();
-                httpService.service(getHttpRequest(), getHttpResponse());
+                new MethodNotAllowedService()
+                        .service(getHttpRequest(), getHttpResponse());
                 log.error("{}", e.getCause(), e);
             }
         } else {
-            httpService = new NotFoundHttpService();
-            httpService.service(getHttpRequest(), getHttpResponse());
+            new NotFoundHttpService()
+                    .service(getHttpRequest(), getHttpResponse());
         }
         close();
     }

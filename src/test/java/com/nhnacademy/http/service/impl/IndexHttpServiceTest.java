@@ -1,6 +1,6 @@
 package com.nhnacademy.http.service.impl;
 
-import com.nhnacademy.http.error.MethodNotAllowed;
+import com.nhnacademy.http.service.exception.MethodNotAllowed;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.request.impl.HttpRequestImpl;
 import com.nhnacademy.http.response.HttpResponse;
@@ -17,8 +17,6 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 class IndexHttpServiceTest {

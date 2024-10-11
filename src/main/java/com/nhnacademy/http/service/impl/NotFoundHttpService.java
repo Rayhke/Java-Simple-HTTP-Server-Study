@@ -23,7 +23,7 @@ public class NotFoundHttpService implements HttpService {
         // Header - 설정
         String responseHeader = null;
 
-        //PrintWriter 응답
+        // PrintWriter 응답
         try(PrintWriter bufferedWriter = httpResponse.getWriter()
         ){
             responseHeader = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(),

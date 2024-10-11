@@ -12,6 +12,8 @@ import java.io.PrintWriter;
 @Slf4j
 public class IndexHttpService implements HttpService {
 
+    public static final String URL = "/index.html";
+
     @Override
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정

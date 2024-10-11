@@ -14,6 +14,8 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class InfoHttpService implements HttpService {
 
+    public static final String URL = "/info.html";
+
     /* InfoHttpService 구현
        - Request : http://localhost:8080/info.html?id=marco&age=40&name=마르코
        - 요청을 처리하고 응답하는 InfoHttpService 입니다.

@@ -1,6 +1,6 @@
 package com.nhnacademy.http.service;
 
-import com.nhnacademy.http.error.MethodNotAllowed;
+import com.nhnacademy.http.service.exception.MethodNotAllowed;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
 

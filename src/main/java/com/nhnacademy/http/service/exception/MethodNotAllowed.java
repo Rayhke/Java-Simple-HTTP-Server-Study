@@ -1,4 +1,4 @@
-package com.nhnacademy.http.error;
+package com.nhnacademy.http.service.exception;
 
 import lombok.extern.slf4j.Slf4j;
 
