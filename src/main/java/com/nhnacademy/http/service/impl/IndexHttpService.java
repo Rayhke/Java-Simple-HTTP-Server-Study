@@ -3,6 +3,7 @@ package com.nhnacademy.http.service.impl;
 import com.nhnacademy.http.request.HttpRequest;
 import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.service.HttpService;
+import com.nhnacademy.http.util.CounterUtils;
 import com.nhnacademy.http.util.ResponseUtils;
 import com.nhnacademy.http.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,11 @@ public class IndexHttpService implements HttpService {
     public void doGet(HttpRequest httpRequest, HttpResponse httpResponse) {
         // Body - 설정
         String responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
+
+        long count = CounterUtils.increaseAndGet();
+
+        log.debug("count : {}", count);
+        responseBody = responseBody.replace("${count}", String.valueOf(count));
 
         // Header - 설정
         String responseHeader = null;
