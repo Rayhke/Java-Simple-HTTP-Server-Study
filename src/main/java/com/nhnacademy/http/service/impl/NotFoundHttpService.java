@@ -5,9 +5,11 @@ import com.nhnacademy.http.response.HttpResponse;
 import com.nhnacademy.http.service.HttpService;
 import com.nhnacademy.http.util.ResponseUtils;
 import com.nhnacademy.http.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
 
+@Slf4j
 public class NotFoundHttpService implements HttpService {
 
     /* NotFoundHttpService 구현
@@ -33,6 +35,7 @@ public class NotFoundHttpService implements HttpService {
             bufferedWriter.write(responseBody);
             bufferedWriter.flush();
         } catch (Exception e) {
+            log.error("{}", e.getMessage(), e);
             throw new RuntimeException(e);
         }
     }

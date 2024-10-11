@@ -8,6 +8,7 @@ import com.nhnacademy.http.service.impl.IndexHttpService;
 import com.nhnacademy.http.service.impl.InfoHttpService;
 import com.nhnacademy.http.service.impl.MethodNotAllowedService;
 import com.nhnacademy.http.service.impl.NotFoundHttpService;
+import com.nhnacademy.http.service.impl.RegisterHttpService;
 import com.nhnacademy.http.util.CounterUtils;
 import com.nhnacademy.http.util.ResponseUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class SimpleHttpServer {
         Context context = ContextHolder.getApplicationContext();
         context.setAttribute(IndexHttpService.URL, new IndexHttpService());
         context.setAttribute(InfoHttpService.URL, new InfoHttpService());
+        context.setAttribute(RegisterHttpService.URL, new RegisterHttpService());
         context.setAttribute(ResponseUtils.DEFAULT_404, new NotFoundHttpService());
         context.setAttribute(ResponseUtils.DEFAULT_405, new MethodNotAllowedService());
         context.setAttribute(CounterUtils.CONTEXT_COUNTER_NAME, new AtomicLong());
