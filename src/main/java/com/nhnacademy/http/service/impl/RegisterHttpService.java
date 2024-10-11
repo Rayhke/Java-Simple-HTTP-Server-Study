@@ -40,9 +40,11 @@ public class RegisterHttpService implements HttpService {
 
     @Override
     public void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-        log.debug("userId {}",httpRequest.getAttribute("userId"));
+
         log.debug("userId : {}", httpRequest.getParameter("userId"));
         log.debug("userPassword : {}", httpRequest.getParameter("userPassword"));
         log.debug("userEmail : {}", httpRequest.getParameter("userEmail"));
+
+        // TODO : 구현할 것
     }
 }
