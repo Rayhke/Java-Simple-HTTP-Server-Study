@@ -69,6 +69,7 @@ public class HttpJob implements Executable {
                                     .findFirst()
                                     .get()
                                     .service(getHttpRequest(), getHttpResponse());
+                close();
             } catch (ObjectNotFoundException e) {
                 new NotFoundHttpService()
                         .service(getHttpRequest(), getHttpResponse());
@@ -82,7 +83,6 @@ public class HttpJob implements Executable {
             new NotFoundHttpService()
                     .service(getHttpRequest(), getHttpResponse());
         }
-        close();
     }
 
     // =================================================================================================================
