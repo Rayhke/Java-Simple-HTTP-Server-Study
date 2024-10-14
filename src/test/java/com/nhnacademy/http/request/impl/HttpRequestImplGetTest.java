@@ -120,7 +120,7 @@ class HttpRequestImplGetTest {
         String nhnacademy = (String) request.getAttribute("name");
         List<Integer> numberList = (List<Integer>) request.getAttribute("numberList");
         Assertions.assertAll(() -> {
-            assertEquals(1l, actual);
+            assertEquals(1L, actual);
             assertEquals("엔에이치엔아카데미", nhnacademy);
             assertEquals(List.of(1, 2, 3, 4, 5), numberList);
         });

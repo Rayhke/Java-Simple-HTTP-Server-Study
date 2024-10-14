@@ -28,6 +28,8 @@ public class HttpRequestImpl implements HttpRequest {
 
     private static final String KEY_REQUEST_PATH = "HTTP-REQUEST-PATH";
 
+    private static final String KEY_CONTENT_TYPE = "Content-Type";
+
     private static final String KEY_CONTENT_LENGTH = "Content-Length";
 
     private static final String HEADER_DELIMITER = ":";
@@ -81,14 +83,22 @@ public class HttpRequestImpl implements HttpRequest {
         }
     }
 
+    // 추후 구조를 수정할 것.
     private void headerParser(String line) {
         log.debug("{}", line);
 
-        int index = line.indexOf(HEADER_DELIMITER); // String[] data = line.split(":");
-        if (index == -1) { return; }
+        int firstValueIndex = line.indexOf(HEADER_DELIMITER); // String[] data = line.split(":");
+        int lastValueIndex = line.length();
+        if (firstValueIndex == -1) { return; }
 
-        String key = line.substring(0, index++).trim();
-        String value = line.substring(index).trim();
+        String key = line.substring(0, firstValueIndex++).trim();
+        if (line.contains(KEY_CONTENT_TYPE) && line.contains(";")) {    // TODO : 임시적인 조치이다. 추후, 좀 더 개선하여, ";" 이 들어간 상황을 최대한 대응하는 구조를 모색할 것
+            lastValueIndex = line.indexOf(";") + 1;
+            String[] data = line.substring(lastValueIndex).split("=");
+            headerMap.put(data[0].trim(), data[1].trim());
+        }
+
+        String value = line.substring(firstValueIndex, lastValueIndex).trim();
         headerMap.put(key, value);
     }
 
@@ -113,7 +123,9 @@ public class HttpRequestImpl implements HttpRequest {
         String httpRequestPath;
 
         // TODO : URL 조작 도중, client 연결로 인한 null 데이터를 읽어오는 상황을 임시 방지
-        if (StringUtils.isNullOrEmpty(line)) { return; }
+        if (StringUtils.isNullOrEmpty(line)) {
+            return;
+        }
 
         if (line.contains("GET") || line.contains("POST")) { // TODO : 여기서 만약 다른 양식으로 method 값이 전달되면 큰일 난다..
             String[] data = line.split(" ");
@@ -165,10 +177,10 @@ public class HttpRequestImpl implements HttpRequest {
     @Override
     public Map<String, String> getParameterMap() {
         return Stream.of(headerMap.get(KEY_QUERY_PARAM_MAP))
-                        .filter(Map.class::isInstance)
-                        .map(o -> (Map<String, String>) o)
-                        .findFirst()
-                        .orElse(new HashMap<>());   // 만약 한번도 할당한 적이 없다면, 최초 선언
+                .filter(Map.class::isInstance)
+                .map(o -> (Map<String, String>) o)
+                .findFirst()
+                .orElse(new HashMap<>());   // 만약 한번도 할당한 적이 없다면, 최초 선언
         // .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
     }
 

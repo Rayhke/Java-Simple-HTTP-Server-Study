@@ -85,7 +85,6 @@ class HttpRequestImplPostTest {
                 request.getParameter(DEFAULT_QUERY_STRING_ID_KEY));
     }
 
-    // TODO : UTF-8 깨짐 현상
     @DisplayName("getParameterByName : name=마르코")
     @Test
     void getParameterByName() {
@@ -109,5 +108,27 @@ class HttpRequestImplPostTest {
 
         Map actual = request.getParameterMap();
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void getHeader_contentType() {
+        String contentType = request.getHeader("Content-Type");
+        log.debug("contentType : {}", contentType);
+        Assertions.assertTrue(contentType.contains("application/x-www-form-urlencoded"));
+    }
+
+    // TODO : Content-Type 과 charset 데이터가 Header 요청의 동일한 줄에 있기 때문에, 이 또한 구분할 구조가 필요.
+    @Test
+    void getHeader_charset() {
+        String charset = request.getHeader("charset");
+        log.debug("charset : {}", charset);
+        Assertions.assertTrue(charset.contains(StringUtils.DEFAULT_CHARSET.toString()));
+    }
+
+    @DisplayName("URI=/index.html")
+    @Test
+    void getRequestURI() {
+        Assertions.assertEquals(DEFAULT_REQUEST_URL,
+                request.getRequestURI());
     }
 }
