@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.PrintWriter;
 
+/**
+ * <a href="http://localhost:8080/index.html">테스트</a>
+ */
 @Slf4j
 public class IndexHttpService implements HttpService {
 
@@ -21,9 +24,16 @@ public class IndexHttpService implements HttpService {
         String responseBody = ResponseUtils.tryGetBodyFromFile(httpRequest.getRequestURI());
 
         long count = CounterUtils.increaseAndGet();
+        String userId = httpRequest.getParameter("userId");
 
         log.debug("count : {}", count);
+        log.debug("userId : {}", userId);
+
         responseBody = responseBody.replace("${count}", String.valueOf(count));
+
+        responseBody = (!StringUtils.isNullOrEmpty(userId)) ?
+                        responseBody.replace("${userId}", userId)
+                        : responseBody.replace("<h2>${userId}님의 회원가입이 완료 되었습니다!</h2>", "");
 
         // Header - 설정
         String responseHeader = null;

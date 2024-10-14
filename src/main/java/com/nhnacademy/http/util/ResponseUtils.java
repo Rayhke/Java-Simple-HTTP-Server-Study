@@ -25,6 +25,7 @@ public final class ResponseUtils {
     public enum HttpStatus {
 
         OK(200, "OK"),
+        REDIRECT(301, "Moved Permanently"),
         NOT_FOUND(404, "Not Found"),
         METHOD_NOT_FOUND(405, "Method Not Allowed"),
         UNKNOWN(-1, "Unknown Status");
