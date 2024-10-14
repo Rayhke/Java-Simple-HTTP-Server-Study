@@ -92,10 +92,11 @@ public class HttpRequestImpl implements HttpRequest {
         if (firstValueIndex == -1) { return; }
 
         String key = line.substring(0, firstValueIndex++).trim();
-        if (line.contains(KEY_CONTENT_TYPE) && line.contains(";")) {    // TODO : 임시적인 조치이다. 추후, 좀 더 개선하여, ";" 이 들어간 상황을 최대한 대응하는 구조를 모색할 것
-            lastValueIndex = line.indexOf(";") + 1;
-            String[] data = line.substring(lastValueIndex).split("=");
-            headerMap.put(data[0].trim(), data[1].trim());
+        if (line.contains(KEY_CONTENT_TYPE)     // TODO : 임시적인 조치이다. 추후, 좀 더 개선하여, 구분자 역할로서 ";" 이 들어간 상황을 최대한 대응하는 구조를 모색할 것
+                && (line.contains("; charset") || line.contains(";charset"))) {
+            lastValueIndex = line.lastIndexOf(";") + 1;
+            String[] charset = line.substring(lastValueIndex).split("=");
+            headerMap.put(charset[0].trim(), charset[1].trim());
         }
 
         String value = line.substring(firstValueIndex, lastValueIndex).trim();
@@ -180,7 +181,7 @@ public class HttpRequestImpl implements HttpRequest {
                 .filter(Map.class::isInstance)
                 .map(o -> (Map<String, String>) o)
                 .findFirst()
-                .orElse(new HashMap<>());   // 만약 한번도 할당한 적이 없다면, 최초 선언
+                .orElse(new HashMap<>());   // 만약 한번도 할당한 적이 없다면, 최초로 할당 선언
         // .orElseThrow(() -> new IllegalArgumentException("Invalid attribute type"));
     }
 
