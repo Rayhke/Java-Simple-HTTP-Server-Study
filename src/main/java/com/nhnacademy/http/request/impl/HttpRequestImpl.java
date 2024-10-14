@@ -8,6 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -95,7 +98,8 @@ public class HttpRequestImpl implements HttpRequest {
         for (String query : queryList) {
             String[] parse = query.split("=");
             String key = parse[0].trim();
-            String value = parse[1].trim();
+            // TODO : URL 인코딩, 디코딩 관련으로 중요한 부분이다.
+            String value = URLDecoder.decode(parse[1].trim(), StringUtils.DEFAULT_CHARSET);
             log.debug("[key : {} | value : {}]", key, value);
             queryMap.put(key, value);
         }
@@ -111,7 +115,7 @@ public class HttpRequestImpl implements HttpRequest {
         // TODO : URL 조작 도중, client 연결로 인한 null 데이터를 읽어오는 상황을 임시 방지
         if (StringUtils.isNullOrEmpty(line)) { return; }
 
-        if (line.contains("GET") || line.contains("POST")) {
+        if (line.contains("GET") || line.contains("POST")) { // TODO : 여기서 만약 다른 양식으로 method 값이 전달되면 큰일 난다..
             String[] data = line.split(" ");
 
             // =========================================================================

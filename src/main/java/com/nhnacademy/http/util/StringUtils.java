@@ -6,10 +6,9 @@ import java.util.Objects;
 
 public final class StringUtils {
 
-    // 운영체제에 따라 줄바꿈을 맞춰서 해줌
+    // TODO : 표현이 잘못되었는 데, CR, LF 는 별개다.
+    // 허나 순수 목적이, 운영체제에 따른 줄바꿈을 구현하는 것이 목적이기 때문에 이름을 이렇게 지었다.
     public static final String CRLF = System.lineSeparator();
-
-    // public static final String DEFAULT_CHARSET = "UTF-8";
 
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 

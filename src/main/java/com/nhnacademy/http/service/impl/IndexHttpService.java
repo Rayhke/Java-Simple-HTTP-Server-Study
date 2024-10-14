@@ -25,14 +25,17 @@ public class IndexHttpService implements HttpService {
 
         long count = CounterUtils.increaseAndGet();
         String userId = httpRequest.getParameter("userId");
+        boolean userIdExist = !StringUtils.isNullOrEmpty(userId);
 
         log.debug("count : {}", count);
         log.debug("userId : {}", userId);
 
         responseBody = responseBody.replace("${count}", String.valueOf(count));
 
-        responseBody = (!StringUtils.isNullOrEmpty(userId)) ?
+        responseBody = (userIdExist) ?
                         responseBody.replace("${userId}", userId)
+                                    .replace("회원가입이 완료 되었습니다!</h2>",
+                                            "회원가입이 완료 되었습니다!</h2><ul><li><h3><a href=\"index.html\">Reset</a></h3></li></ul>")
                         : responseBody.replace("<h2>${userId}님의 회원가입이 완료 되었습니다!</h2>", "");
 
         // Header - 설정
