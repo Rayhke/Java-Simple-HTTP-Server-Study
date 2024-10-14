@@ -47,7 +47,7 @@ public class HttpRequestImpl implements HttpRequest {
 
     private void initialize() {
         try {
-            // 여기서 client 가 즉시 종료되지 않도록 한다.
+            // TODO : Web Client 쪽에서 URL 의 값을 변경할 때, 변경된 URL 을 정상적으로 다 입력하기 전에 시동이 들어간다?
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             log.debug("------HTTP-REQUEST_start()");
             firstLineParser(bufferedReader.readLine());
@@ -105,7 +105,9 @@ public class HttpRequestImpl implements HttpRequest {
         boolean queryStringExist = false;
         String httpRequestMethod;
         String httpRequestPath;
-        // Map<String, String> queryMap = new HashMap<>();
+
+        // TODO : 임시 방지
+        if (StringUtils.isNullOrEmpty(line)) { return; }
 
         if (line.contains("GET") || line.contains("POST")) {
             String[] data = line.split(" ");
