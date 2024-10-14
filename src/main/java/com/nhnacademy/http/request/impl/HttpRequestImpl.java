@@ -93,7 +93,7 @@ public class HttpRequestImpl implements HttpRequest {
     private void headerParser(String line) {
         log.debug("{}", line);
 
-        int firstValueIndex = line.indexOf(HEADER_DELIMITER); // String[] data = line.split(":");
+        int firstValueIndex = line.indexOf(HEADER_DELIMITER);
         int lastValueIndex = line.length();
         if (firstValueIndex == -1) { return; }
 
