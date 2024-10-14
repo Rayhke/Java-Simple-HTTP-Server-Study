@@ -48,7 +48,7 @@ class ResponseUtilsTest {
     @DisplayName("createResponseHeader : 200")
     @Test
     void createResponseHeader1() {
-        String actual = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(), "UTF-8", 100);
+        String actual = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.OK.getCode(), StringUtils.DEFAULT_CHARSET, 100);
         log.debug("actual : {}", actual);
 
         Assertions.assertAll(
@@ -61,7 +61,7 @@ class ResponseUtilsTest {
     @DisplayName("createResponseHeader : 404")
     @Test
     void createResponseHeader2() {
-        String actual = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(), "UTF-8", 100);
+        String actual = ResponseUtils.createResponseHeader(ResponseUtils.HttpStatus.NOT_FOUND.getCode(), StringUtils.DEFAULT_CHARSET, 100);
         log.debug("actual : {}", actual);
 
         Assertions.assertAll(

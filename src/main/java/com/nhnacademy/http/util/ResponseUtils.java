@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Objects;
 
 @Slf4j
@@ -107,7 +108,7 @@ public final class ResponseUtils {
      * @param contentLength, responseBody 의 length
      * @return responseHeader 를 String 반환
      */
-    public static String createResponseHeader(int httpStatusCode, String charset, int contentLength) {
+    public static String createResponseHeader(int httpStatusCode, Charset charset, int contentLength) {
         /* responseHeader 를 생성 합니다. 아래 header 예시를 참고
 
             - 200 OK

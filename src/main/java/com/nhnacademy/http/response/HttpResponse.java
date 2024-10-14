@@ -2,6 +2,7 @@ package com.nhnacademy.http.response;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 
 public interface HttpResponse {
 
@@ -14,10 +15,12 @@ public interface HttpResponse {
      * */
     PrintWriter getWriter() throws IOException;
 
-    String getCharacterEncoding();
+    Charset getCharacterEncoding();
 
     /**
      * charset – a String specifying only the character set defined by IANA Character Sets
      * */
     void setCharacterEncoding(String charset);
+
+    void setCharacterEncoding(Charset charset);
 }

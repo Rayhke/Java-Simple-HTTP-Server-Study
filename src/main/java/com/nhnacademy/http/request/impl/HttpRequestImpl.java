@@ -17,6 +17,8 @@ import java.util.stream.Stream;
 @Slf4j
 public class HttpRequestImpl implements HttpRequest {
 
+    private static final String KEY_HOST = "Host";
+
     private static final String KEY_HTTP_METHOD = "HTTP-METHOD";
 
     private static final String KEY_QUERY_PARAM_MAP = "HTTP-QUERY-PARAM-MAP";
@@ -106,7 +108,7 @@ public class HttpRequestImpl implements HttpRequest {
         String httpRequestMethod;
         String httpRequestPath;
 
-        // TODO : 임시 방지
+        // TODO : URL 조작 도중, client 연결로 인한 null 데이터를 읽어오는 상황을 임시 방지
         if (StringUtils.isNullOrEmpty(line)) { return; }
 
         if (line.contains("GET") || line.contains("POST")) {
@@ -132,14 +134,6 @@ public class HttpRequestImpl implements HttpRequest {
                 String[] queryList = data[1].substring(urlLastIndex + 1)
                         .split("&");
                 parametersParser(queryList);
-                /*for (String query : queryList) {
-                    String[] parse = query.split("=");
-                    String key = parse[0].trim();
-                    String value = parse[1].trim();
-                    log.debug("[key : {} | value : {}]", key, value);
-                    queryMap.put(key, value);
-                }
-                headerMap.put(KEY_QUERY_PARAM_MAP, queryMap);*/
             }
             // =========================================================================
         }
@@ -177,6 +171,11 @@ public class HttpRequestImpl implements HttpRequest {
     @Override
     public String getParameter(String name) {
         return getParameterMap().get(name);
+    }
+
+    @Override
+    public String getHost() {
+        return getHeader(KEY_HOST);
     }
 
     @Override

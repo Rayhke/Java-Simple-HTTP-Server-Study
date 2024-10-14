@@ -16,6 +16,9 @@ public interface HttpRequest {
     // ?page=1&sort=age, ex) getParameter("sort") , return age
     String getParameter(String name);
 
+    // 개인이 임의로 추가
+    String getHost();
+
     // GET, POST, ....
     String getMethod();
 

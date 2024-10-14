@@ -45,16 +45,19 @@ public class RegisterHttpService implements HttpService {
     @Override
     public void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
 
-        log.debug("userId : {}", httpRequest.getParameter("userId"));
+        String key = "userId";
+
+        log.debug("userId : {}", httpRequest.getParameter(key));
         log.debug("userPassword : {}", httpRequest.getParameter("userPassword"));
         log.debug("userEmail : {}", httpRequest.getParameter("userEmail"));
 
         HttpStatus httpStatus = HttpStatus.REDIRECT;
 
+        // TODO : HTTP 301 API 문서 정독하기
         StringBuilder responseHeader = new StringBuilder();
         responseHeader.append(String.format("HTTP/1.1 %d %s%s", httpStatus.getCode(), httpStatus.getDescription(), StringUtils.CRLF));
-        responseHeader.append(String.format("Location: http://localhost:%d/%s?%s=%s",
-                8080, "index.html", "userId", httpRequest.getParameter("userId")));
+        responseHeader.append(String.format("Location: http://%s/%s?%s=%s",
+                httpRequest.getHost(), "index.html", key, httpRequest.getParameter(key)));
 
         try (PrintWriter bufferedWriter = httpResponse.getWriter()
         ) {

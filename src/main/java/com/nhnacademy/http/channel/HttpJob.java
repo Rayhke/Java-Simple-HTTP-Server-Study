@@ -69,9 +69,8 @@ public class HttpJob implements Executable {
                                     .findFirst()
                                     .get()
                                     .service(getHttpRequest(), getHttpResponse());
-                // TODO : Socket 의 종료 시점이 적절한 지, 검증할 것
                 close();
-            } catch (ObjectNotFoundException e) {
+            } catch (ObjectNotFoundException e) { // TODO : 휴먼 에러 검증용
                 new NotFoundHttpService()
                         .service(getHttpRequest(), getHttpResponse());
             } catch (MethodNotAllowed e) {
@@ -80,7 +79,6 @@ public class HttpJob implements Executable {
                 log.error("{}", e.getCause(), e);
             }
         } else {
-            // TODO : 위의 부분이 중복되는 느낌이 있다.
             new NotFoundHttpService()
                     .service(getHttpRequest(), getHttpResponse());
         }
