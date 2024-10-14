@@ -70,7 +70,7 @@ public class HttpJob implements Executable {
                                     .get()
                                     .service(getHttpRequest(), getHttpResponse());
                 close();
-            } catch (ObjectNotFoundException e) { // TODO : 휴먼 에러 검증용
+            } catch (ObjectNotFoundException e) { // TODO : resources 파일은 존재 하지만, context 에 service 구현체를 등록 안해둔 경우
                 new NotFoundHttpService()
                         .service(getHttpRequest(), getHttpResponse());
             } catch (MethodNotAllowed e) {

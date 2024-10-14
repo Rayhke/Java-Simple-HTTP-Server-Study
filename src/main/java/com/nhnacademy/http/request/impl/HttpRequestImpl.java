@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.URLDecoder;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +38,7 @@ public class HttpRequestImpl implements HttpRequest {
 
     private final Socket client;
 
-    private boolean methodType;
+    private boolean isBodyRequest;
 
     public HttpRequestImpl(Socket client) {
         if (Objects.isNull(client)) {
@@ -54,11 +52,17 @@ public class HttpRequestImpl implements HttpRequest {
 
     private void initialize() {
         try {
-            // TODO : Web Client 쪽에서 URL 의 값을 변경할 때, 변경된 URL 을 정상적으로 다 입력하기 전에 시동이 들어간다?
+            // TODO : Web Client 쪽에서 URL 및 URI 의 값을 변경할 때, 값을 정상적으로 다 입력하기 전에 시동이 들어간다?
+            // 비동기 처리라서?
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            log.debug("------HTTP-REQUEST_start()");
-            firstLineParser(bufferedReader.readLine());
+            isBodyRequest = false;
 
+            log.debug("------HTTP-REQUEST_start()");
+            // =========================================================================================================
+            // Header Request : First Line
+            firstLineParser(bufferedReader.readLine());
+            // =========================================================================================================
+            // Header Request : Middle Line
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {
                 if (StringUtils.isNullOrEmpty(line)) {
@@ -66,16 +70,18 @@ public class HttpRequestImpl implements HttpRequest {
                 }
                 headerParser(line);
             }
-
-            // Content-Length
-            if (methodType) {
+            // =========================================================================================================
+            // Body Request : Line & Content-Length
+            if (isBodyRequest) {
                 String rawContentLength = getContentLength();
                 int contentLength = Integer.parseInt(rawContentLength);
 
                 char[] body = new char[contentLength];
                 bufferedReader.read(body);
+
                 parametersParser(new String(body).split("&"));
             }
+            // =========================================================================================================
             log.debug("------HTTP-REQUEST_end()");
         } catch (IOException e) {
             log.debug("{}", e.getMessage(), e);
@@ -135,7 +141,7 @@ public class HttpRequestImpl implements HttpRequest {
             // method
             httpRequestMethod = data[0];
             headerMap.put(KEY_HTTP_METHOD, httpRequestMethod);
-            methodType = httpRequestMethod.equals("POST");
+            isBodyRequest = httpRequestMethod.equals("POST");
             // =========================================================================
             // path
             int urlLastIndex = data[1].length();
